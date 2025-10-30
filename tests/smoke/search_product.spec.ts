@@ -18,3 +18,8 @@ test('Search Product Smoke Test', async ({page}) => {
     await productsPage.searchProduct('T-Shirt');
     await productsPage.validateSearchedProductsPage();
 });
+
+test('Add Product to Cart Smoke Test', async ({page}) => {
+    await productsPage.searchProduct('T-Shirt');
+    await productsPage.addProductsToCartWithValidation(2)
+});

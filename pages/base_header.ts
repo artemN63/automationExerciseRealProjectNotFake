@@ -1,7 +1,7 @@
 import {Page, Locator} from '@playwright/test';
 
 export class HeaderBase {
-    private page: Page;
+    protected page: Page;
     navBarElement: Locator;
 
     constructor(page: Page) {
