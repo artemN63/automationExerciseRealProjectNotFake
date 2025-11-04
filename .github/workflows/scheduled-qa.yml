@@ -1,0 +1,55 @@
+name: Scheduled Tests - QA
+
+on:
+  schedule:
+    # Runs daily at 4 AM Chicago time (10 AM UTC)
+    - cron: '0 10 * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  test:
+    name: Playwright UI Tests - QA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npm test
+        env:
+          CI: true
+          BASE_URL: ${{ secrets.BASE_URL }}
+          VALID_USER_EMAIL: ${{ secrets.VALID_USER_EMAIL }}
+          VALID_USER_PASSWORD: ${{ secrets.VALID_USER_PASSWORD }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-qa-${{ github.run_number }}
+          path: playwright-report/
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-qa-${{ github.run_number }}
+          path: test-results/
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::QA environment tests failed! Check the test report for details."
