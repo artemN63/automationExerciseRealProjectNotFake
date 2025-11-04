@@ -5,13 +5,20 @@ export class AccountCreatedPage extends HeaderBase {
     accountCreatedMessage: Locator;
     expectedAccountCreatedText = 'Account Created!';
 
+    continueButton: Locator;
+
     constructor(page: Page) {
         super(page);
         this.accountCreatedMessage = page.locator('h2 b');
+        this.continueButton = page.locator('a[data-qa="continue-button"]');
     }
 
     async verifyAccountCreatedMessage() {
         await this.accountCreatedMessage.isVisible()
         await expect(this.accountCreatedMessage).toHaveText(this.expectedAccountCreatedText);
+    }
+
+    async clickContinueButton() {
+        await this.continueButton.click();
     }
 }

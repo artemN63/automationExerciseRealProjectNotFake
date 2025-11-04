@@ -1,4 +1,4 @@
-import {Page, Locator} from '@playwright/test';
+import {Page, Locator, expect} from '@playwright/test';
 
 export class HeaderBase {
     protected page: Page;
@@ -11,5 +11,9 @@ export class HeaderBase {
 
     async clickNavLink(linkText: string) {
         await this.navBarElement.getByText(linkText).click();
+    }
+
+    async validateNavLinkHasText(linkText: string) {
+        await expect(this.navBarElement.getByText(linkText)).toBeVisible();
     }
 }
